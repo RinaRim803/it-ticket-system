@@ -16,5 +16,8 @@ def create_app():
     # Register route blueprints
     from app.routes.tickets import tickets_bp
     from app.routes.health import health_bp
+ 
+    app.register_blueprint(tickets_bp, url_prefix="/api")
+    app.register_blueprint(health_bp, url_prefix="/api")
 
     return app
