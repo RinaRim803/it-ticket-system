@@ -15,11 +15,11 @@ import os
 import sys
 
 # Use a separate DB file for testing
-import database
+from app.services import database
 database.DB_PATH = "test_tickets.db"
 
-from database import initialize_db, insert_ticket, update_status, get_ticket, get_all_tickets, get_ticket_history
-from classifier import analyze_ticket
+from app.services.database import initialize_db, insert_ticket, update_status, get_ticket, get_all_tickets, get_ticket_history
+from app.services.classifier import analyze_ticket
 
 PASS = "\033[92m PASS\033[0m"
 FAIL = "\033[91m FAIL\033[0m"
