@@ -14,20 +14,22 @@ import argparse
 import sys
 from app.services.database import initialize_db, insert_ticket, update_status, get_ticket, get_all_tickets, get_ticket_history
 from app.services.classifier import analyze_ticket
+from app.services.config import get_ticket_config
 
 # ── ANSI color codes ──────────────────────────────────────────────────────────
 COLORS = {
-    "P1": "\033[91m",   # Red
-    "P2": "\033[93m",   # Yellow
-    "P3": "\033[94m",   # Blue
-    "P4": "\033[92m",   # Green
+    "P1": "\033[91m",
+    "P2": "\033[93m",
+    "P3": "\033[94m",
+    "P4": "\033[92m",
     "RESET": "\033[0m",
     "BOLD": "\033[1m",
     "DIM": "\033[2m",
     "CYAN": "\033[96m",
 }
 
-STATUS_FLOW = ["Open", "In Progress", "Resolved"]
+# Loaded from config — edit config.json to change status flow
+STATUS_FLOW = get_ticket_config()["valid_statuses"]
 
 
 def color(text, code):
@@ -41,7 +43,6 @@ def print_header(text):
 
 
 def print_ticket_row(ticket):
-    """Print a single ticket as a compact list row"""
     pri = ticket["priority"]
     status_col = {
         "Open":        "\033[91mOpen       \033[0m",
@@ -59,7 +60,6 @@ def print_ticket_row(ticket):
 
 
 def print_ticket_detail(ticket):
-    """Print full ticket details"""
     pri = ticket["priority"]
     print_header(f"Ticket #{ticket['id']}")
     print(f"  {'Title':<14}: {color(ticket['title'], 'BOLD')}")
@@ -75,7 +75,6 @@ def print_ticket_detail(ticket):
 
 
 def cmd_create():
-    """Interactive prompt to create a new ticket"""
     print_header("Create New Ticket")
     title = input("  Title       : ").strip()
     if not title:
@@ -87,8 +86,7 @@ def cmd_create():
         print("  [ERROR] Description cannot be empty.")
         return
 
-    # Run auto-classification and priority assignment
-    result = analyze_ticket(title, description)
+    result   = analyze_ticket(title, description)
     category = result["category"]
     priority = result["priority"]
 
@@ -106,9 +104,8 @@ def cmd_create():
 
 
 def cmd_list(status_filter=None):
-    """Print a table of all tickets"""
     tickets = get_all_tickets(status_filter)
-    label = f"Tickets ({status_filter})" if status_filter else "All Tickets"
+    label   = f"Tickets ({status_filter})" if status_filter else "All Tickets"
     print_header(label)
 
     if not tickets:
@@ -123,7 +120,6 @@ def cmd_list(status_filter=None):
 
 
 def cmd_view(ticket_id):
-    """Print ticket detail and full status history"""
     ticket = get_ticket(ticket_id)
     if not ticket:
         print(f"  [ERROR] Ticket #{ticket_id} not found.")
@@ -144,7 +140,6 @@ def cmd_view(ticket_id):
 
 
 def cmd_update(ticket_id):
-    """Interactive prompt to update ticket status"""
     ticket = get_ticket(ticket_id)
     if not ticket:
         print(f"  [ERROR] Ticket #{ticket_id} not found.")

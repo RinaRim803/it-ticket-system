@@ -11,6 +11,7 @@ PATCH  /api/tickets/<id>/status   Update ticket status
 from flask import Blueprint, request, jsonify
 from app.services.database import insert_ticket, get_ticket, get_all_tickets, get_ticket_history, update_status
 from app.services.classifier import analyze_ticket
+from app.services.config import get_ticket_config
 
 tickets_bp = Blueprint("tickets", __name__)
 
@@ -23,28 +24,26 @@ def create_ticket():
 
     Request body (JSON):
         {
-            "title":       "High CPU usage detected",       # required
-            "description": "CPU at 94% for 5 minutes",     # required
-            "source":      "sys-health-check"               # optional — which tool sent this
+            "title":       "High CPU usage detected",
+            "description": "CPU at 94% for 5 minutes",
+            "source":      "sys-health-check"
         }
     """
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Request body must be JSON"}), 400
 
-    title = data.get("title", "").strip()
+    title       = data.get("title", "").strip()
     description = data.get("description", "").strip()
-    source = data.get("source", "manual")
+    source      = data.get("source", "manual")
 
     if not title or not description:
         return jsonify({"error": "title and description are required"}), 400
 
-    # Auto-classify and assign priority
-    result = analyze_ticket(title, description)
+    result   = analyze_ticket(title, description)
     category = result["category"]
     priority = result["priority"]
 
-    # Append source tag to description for traceability
     if source != "manual":
         description = f"[Source: {source}]\n\n{description}"
 
@@ -90,7 +89,7 @@ def update_ticket_status(ticket_id):
     Request body (JSON):
         {
             "status": "In Progress",
-            "note":   "Investigating the issue"   # optional
+            "note":   "Investigating the issue"
         }
     """
     data = request.get_json(silent=True)
@@ -98,9 +97,10 @@ def update_ticket_status(ticket_id):
         return jsonify({"error": "Request body must be JSON"}), 400
 
     new_status = data.get("status", "").strip()
-    note = data.get("note", "").strip() or None
+    note       = data.get("note", "").strip() or None
 
-    valid_statuses = ["Open", "In Progress", "Resolved"]
+    # Load valid statuses from config — no hardcoding
+    valid_statuses = get_ticket_config()["valid_statuses"]
     if new_status not in valid_statuses:
         return jsonify({"error": f"Invalid status. Must be one of: {valid_statuses}"}), 400
 

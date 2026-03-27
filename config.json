@@ -1,0 +1,62 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 5000,
+    "debug": false
+  },
+
+  "ticket": {
+    "valid_statuses":   ["Open", "In Progress", "Resolved"],
+    "valid_priorities": ["P1", "P2", "P3", "P4"]
+  },
+
+  "classifier": {
+    "hardware_devices": [
+      "printer", "monitor", "keyboard", "mouse", "scanner", "laptop", "desktop"
+    ],
+
+    "category_keywords": {
+      "Network": [
+        "network", "internet", "wifi", "wi-fi", "ethernet", "vpn",
+        "dns", "ip", "ping", "firewall", "router", "switch", "bandwidth",
+        "connection", "offline", "no internet", "latency", "packet loss"
+      ],
+      "Hardware": [
+        "hardware", "monitor", "keyboard", "mouse", "printer", "scanner",
+        "laptop", "desktop", "screen", "display", "ram", "memory",
+        "hard drive", "ssd", "cpu", "fan", "power", "battery", "usb",
+        "device", "blue screen", "bsod", "crash", "freeze", "overheat",
+        "not responding", "unresponsive", "no display", "blank screen"
+      ],
+      "Software": [
+        "software", "application", "app", "install", "uninstall", "update",
+        "error", "bug", "license", "activation", "windows", "macos",
+        "office", "excel", "outlook", "teams", "zoom", "browser", "chrome",
+        "firefox", "antivirus", "login", "password", "reset", "driver"
+      ]
+    },
+
+    "priority_keywords": {
+      "P1": [
+        "all users", "everyone", "entire office", "whole company", "outage",
+        "not working for everyone", "multiple users", "team cannot",
+        "production", "server down", "service outage"
+      ],
+      "P2": [
+        "cannot work", "urgent", "asap", "critical", "blocked", "cannot access",
+        "unable to login", "data loss", "lost data", "security", "breach"
+      ],
+      "P4": [
+        "request", "would like", "please install", "can you install",
+        "need new", "new software", "new application"
+      ]
+    },
+
+    "category_priority_defaults": {
+      "Network":  "P2",
+      "Hardware": "P3",
+      "Software": "P3",
+      "General":  "P4"
+    }
+  }
+}
