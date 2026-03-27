@@ -12,8 +12,8 @@ Usage:
 
 import argparse
 import sys
-from database import initialize_db, insert_ticket, update_status, get_ticket, get_all_tickets, get_ticket_history
-from classifier import analyze_ticket
+from app.services.database import initialize_db, insert_ticket, update_status, get_ticket, get_all_tickets, get_ticket_history
+from app.services.classifier import analyze_ticket
 
 # ── ANSI color codes ──────────────────────────────────────────────────────────
 COLORS = {

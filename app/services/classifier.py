@@ -1,5 +1,5 @@
 """
-classifier.py
+app/services/classifier.py
 Auto-categorization and SLA priority assignment module
 
 Core ITSM logic:

@@ -1,5 +1,5 @@
 """
-database.py
+app/services/database.py
 SQLite database management module for IT Ticket System
 """
 
